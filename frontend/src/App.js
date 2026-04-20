@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ChartComponent from "./ChartComponent";
 
 function App() {
   const [city, setCity] = useState("Ahmedabad");
@@ -22,7 +23,21 @@ function App() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div style={{
+      textAlign: "center",
+      marginTop: "50px",
+      fontFamily: "Arial",
+      backgroundColor: "#f5f5f5",
+      padding: "20px"
+    }}>
+      {/* <div style={{
+  background: "white",
+  padding: "20px",
+  margin: "20px auto",
+  width: "50%",
+  borderRadius: "10px",
+  boxShadow: "0px 0px 10px rgba(0,0,0,0.1)"
+}}> */}
       <h1>🌍 SkyCast Climate Intelligence</h1>
 
       {/* City Input */}
@@ -65,6 +80,7 @@ function App() {
           <p>🤖 Predicted Temperature: {prediction.predicted_temperature}°C</p>
         </div>
       )}
+      {prediction && <ChartComponent prediction={prediction} />}
     </div>
   );
 }
