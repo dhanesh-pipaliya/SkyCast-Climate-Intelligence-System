@@ -1,25 +1,69 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function App() {
-  const [data, setData] = useState(null);
+  const [city, setCity] = useState("Ahmedabad");
+  const [day, setDay] = useState(11);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/predict")
+  const [weather, setWeather] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+
+  // Fetch weather
+  const getWeather = () => {
+    fetch(`http://127.0.0.1:8000/weather/${city}`)
       .then((res) => res.json())
-      .then((data) => setData(data));
-  }, []);
+      .then((data) => setWeather(data));
+  };
+
+  // Fetch ML prediction
+  const getPrediction = () => {
+    fetch(`http://127.0.0.1:8000/predict-ml?day=${day}`)
+      .then((res) => res.json())
+      .then((data) => setPrediction(data));
+  };
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>🌍 SkyCast Climate System</h1>
+      <h1>🌍 SkyCast Climate Intelligence</h1>
 
-      {data ? (
+      {/* City Input */}
+      <div>
+        <input
+          type="text"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          placeholder="Enter city"
+        />
+        <button onClick={getWeather}>Get Weather</button>
+      </div>
+
+      {/* Weather Result */}
+      {weather && (
         <div>
-          <h2>Temperature Prediction: {data.temperature_prediction}°C</h2>
-          <h3>Rain Probability: {data.rain_probability}</h3>
+          <h2>City: {weather.city}</h2>
+          <p>🌡 Temperature: {weather.temperature}°C</p>
+          <p>💧 Humidity: {weather.humidity}%</p>
+          <p>🌥 Weather: {weather.weather}</p>
         </div>
-      ) : (
-        <p>Loading...</p>
+      )}
+
+      <hr />
+
+      {/* Day Input */}
+      <div>
+        <input
+          type="number"
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
+        />
+        <button onClick={getPrediction}>Predict Temperature</button>
+      </div>
+
+      {/* Prediction Result */}
+      {prediction && (
+        <div>
+          <h2>Day: {prediction.day}</h2>
+          <p>🤖 Predicted Temperature: {prediction.predicted_temperature}°C</p>
+        </div>
       )}
     </div>
   );

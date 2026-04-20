@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+import joblib
+import os
 import pandas as pd
 
 app = FastAPI()
@@ -14,6 +16,11 @@ app.add_middleware(
 )
 
 API_KEY = "ca826bb501b4c7c0133d0c276e9093a4"  # 🔥 replace this
+
+# 🔥 LOAD MODEL HERE (GLOBAL)
+model_path = os.path.join(os.path.dirname(__file__), "..", "ml-model", "model.pkl")
+model = joblib.load(model_path)
+
 
 @app.get("/")
 def home():
