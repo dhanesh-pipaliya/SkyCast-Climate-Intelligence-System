@@ -28,20 +28,27 @@ def home():
 
 @app.get("/weather/{city}")
 def get_weather(city: str):
-    url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
-    
-    response = requests.get(url)
-    data = response.json()
+    try:
+        url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+        
+        response = requests.get(url, timeout=5)
+        data = response.json()
 
-    if data.get("cod") != 200:
-        return {"error": "City not found"}
+        if data.get("cod") != 200:
+            return {"error": "City not found"}
 
-    return {
-        "city": city,
-        "temperature": data["main"]["temp"],
-        "humidity": data["main"]["humidity"],
-        "weather": data["weather"][0]["description"]
-    }
+        return {
+            "city": city,
+            "temperature": data["main"]["temp"],
+            "humidity": data["main"]["humidity"],
+            "weather": data["weather"][0]["description"]
+        }
+
+    except requests.exceptions.Timeout:
+        return {"error": "API request timed out. Try again."}
+
+    except requests.exceptions.RequestException:
+        return {"error": "Network error. Check internet connection."}
     
 @app.get("/predict-ml")
 def predict_ml(day: int):
