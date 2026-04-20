@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+import pandas as pd
 
 app = FastAPI()
 
@@ -33,4 +34,14 @@ def get_weather(city: str):
         "temperature": data["main"]["temp"],
         "humidity": data["main"]["humidity"],
         "weather": data["weather"][0]["description"]
+    }
+    
+@app.get("/predict-ml")
+def predict_ml(day: int):
+    input_data = pd.DataFrame({"day": [day]})
+    prediction = model.predict(input_data)
+
+    return {
+        "day": day,
+        "predicted_temperature": round(prediction[0], 2)
     }
